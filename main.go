@@ -77,8 +77,9 @@ func main() {
 			nowLocalTime := time.Now().UnixNano() / 1e6
 			jdTime, _ := getJdTime()
 			buyDate := config.Read("config", "buy_time")
+			now := time.Now()
 			loc, _ := time.LoadLocation("Local")
-			t, _ := time.ParseInLocation("2006-01-02 15:04:05", buyDate, loc)
+			t, _ := time.ParseInLocation("2006-01-02 15:04:05", now.Format("2006-01-02 ")+buyDate, loc)
 			buyTime := t.UnixNano() / 1e6
 			diffTime := nowLocalTime - jdTime
 			log.Println(fmt.Sprintf("正在等待到达设定时间:%s，检测本地时间与京东服务器时间误差为【%d】毫秒", buyDate, diffTime))
