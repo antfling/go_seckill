@@ -82,7 +82,7 @@ func main() {
 			t, _ := time.ParseInLocation("2006-01-02 15:04:05", now.Format("2006-01-02 ")+buyDate, loc)
 			buyTime := t.UnixNano() / 1e6
 			diffTime := nowLocalTime - jdTime
-			log.Println(fmt.Sprintf("正在等待到达设定时间:%s，检测本地时间与京东服务器时间误差为【%d】毫秒", buyDate, diffTime))
+			log.Println(fmt.Sprintf("正在等待到达设定时间:%s，检测本地时间与京东服务器时间误差为【%d】毫秒", now.Format("2006-01-02 ")+buyDate, diffTime))
 			timerTime := (buyTime + diffTime) - jdTime
 			if timerTime <= 0 {
 				log.Println("请设置抢购时间")
@@ -104,7 +104,7 @@ func getJdTime() (int64, error) {
 	resp, body, err := req.SetUrl("https://a.jd.com//ajax/queryServerData.html").SetMethod("get").Send().End()
 	if err != nil || resp.StatusCode != http.StatusOK {
 		log.Println("获取京东服务器时间失败")
-		return 0, errors.New("获取京东服务器时间失败")
+		return time.Now().UnixNano() / 1e6, errors.New("获取京东服务器时间失败")
 	}
 	return gjson.Get(body, "serverTime").Int(), nil
 }
